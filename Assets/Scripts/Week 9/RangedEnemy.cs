@@ -10,6 +10,7 @@ public class RangedEnemy : Enemy
   
     protected override void Attack()
     {
+        base.Attack();
         GameObject go = Instantiate(projectilePrefab, projectileSpawnPosition.position, projectileSpawnPosition.rotation);
 
         go.GetComponent<Rigidbody>().AddForce(go.transform.forward * projectileForce);

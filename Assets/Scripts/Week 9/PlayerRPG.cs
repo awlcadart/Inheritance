@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class PlayerRPG : MonoBehaviour
 {
-    public float health = 100f;
+    public float health = 225f;
     public float attackDamage = 5f;
     public float attackInterval = 1f;
+    public TextMeshProUGUI healthbar;
    
 
     private float timer;
@@ -19,6 +21,13 @@ public class PlayerRPG : MonoBehaviour
     public float projectileForce = 500f;
     public float rangedattackDamage = 10f;
 
+    public bool hasYellowPowUp = false;
+    public bool hasRedPowUp = false;
+    public bool hasBluePowUp = false;
+
+    public AudioSource Oof;
+    
+
 
     public Image attackReadyImage;
 
@@ -26,12 +35,15 @@ public class PlayerRPG : MonoBehaviour
     void Start()
     {
         
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(isAttackReady == false)
+        healthbar.text = "health" + health;
+
+        if (isAttackReady == false)
         {
             timer += Time.deltaTime;
 
@@ -72,8 +84,28 @@ public class PlayerRPG : MonoBehaviour
         }
 
     }
+        public void TakeDamage(int damageTaken)
+    {
+        health -= damageTaken;
         
+        if(health <=0)
+        {
+            Die();
+        }
+    }
 
+    private void Die()
+    {
+
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "VisionCone")
+        {
+            other.GetComponentInParent<Enemy>().SeePlayer();
+        }
+    }
     public void Attack(BaseEnemy enemy)
     {
         enemy.TakeDamage(attackDamage);
@@ -94,6 +126,7 @@ public class PlayerRPG : MonoBehaviour
 
         if (health <= 0)
         {
+            Oof.Play();
             Debug.Log("YOU DIED");
         }
     }
